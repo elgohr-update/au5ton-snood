@@ -69,7 +69,7 @@ with tqdm(total=len(friends), unit='users') as pbar:
         pbar.set_description(username)
         for post in tqdm(reddit.redditor(username).submissions.new(limit=None), total=1000, unit='posts', leave=False):
             if post.is_self == False:
-                c.execute(f'INSERT OR IGNORE INTO reddit_submissions VALUES (?,?,?,?,?,?,?,?,?)', (post.title, post.author.name, int(post.created_utc), f'https://reddit.com{post.permalink}', post.url, post.id, int(post.num_comments), int(post.score), time.mktime(time.localtime()), False))
+                c.execute(f'INSERT OR IGNORE INTO reddit_submissions VALUES (?,?,?,?,?,?,?,?,?, ?)', (post.title, post.author.name, int(post.created_utc), f'https://reddit.com{post.permalink}', post.url, post.id, int(post.num_comments), int(post.score), time.mktime(time.localtime()), False))
                 conn.commit()
         pbar.update()
 
