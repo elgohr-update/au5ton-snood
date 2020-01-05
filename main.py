@@ -64,10 +64,10 @@ with Spinner('Populating database with redditor information'):
 # only usernames are necessary
 friends = [u.name for u in friends]
 print(f'Downloading post history')
-with tqdm(total=len(friends), unit='users') as pbar:
+with tqdm(total=len(friends), unit='user') as pbar:
     for username in friends:
         pbar.set_description(username)
-        for post in tqdm(reddit.redditor(username).submissions.new(limit=None), total=1000, unit='posts', leave=False):
+        for post in tqdm(reddit.redditor(username).submissions.new(limit=None), total=1000, unit='post', leave=False):
             if post.is_self == False:
                 c.execute(f'INSERT OR IGNORE INTO reddit_submissions VALUES (?,?,?,?,?,?,?,?,?, ?)', (post.title, post.author.name, int(post.created_utc), f'https://reddit.com{post.permalink}', post.url, post.id, int(post.num_comments), int(post.score), time.mktime(time.localtime()), False))
                 conn.commit()
