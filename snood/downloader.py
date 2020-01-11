@@ -27,7 +27,7 @@ def download_method(link: str):
         return 'other'
 
 def wget(folder: str, link: str):
-    file_name = urlparse(link).path[1:]
+    file_name = urlparse(link).path.split('/')[-1]
     with requests.get(link, stream=True) as r:
         with open(os.path.join(os.path.abspath(folder), file_name), 'wb') as f:
             shutil.copyfileobj(r.raw, f)
