@@ -17,7 +17,7 @@ def download_method(link: str):
         return 'wget'
     elif (parsed.netloc == 'www.vidble.com' or parsed.netloc == 'vidble.com') and (parsed.path.endswith('.jpg') or parsed.path.endswith('.png')):
         return 'wget'
-    elif parsed.netloc in ['v.redd.it', 'm.youtube.com', 'youtube.com', 'www.youtube.com', 'youtu.be', 'pornhub.com', 'www.pornhub.com', 'www.erome.com', 'erome.com', 'vimeo.com', 'www.vimeo.com', 'gfycat.com', 'www.gfycat.com']:
+    elif parsed.netloc in ['v.redd.it', 'pornhub.com', 'www.pornhub.com', 'www.erome.com', 'erome.com', 'vimeo.com', 'www.vimeo.com', 'gfycat.com', 'www.gfycat.com']:
         return 'youtube-dl'
     elif parsed.netloc in ['imgur.com', 'm.imgur.com']:
         return 'ripme'
