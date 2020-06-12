@@ -23,6 +23,8 @@ def download_method(link: str):
         return 'ripme'
     elif (parsed.netloc == 'www.vidble.com' or parsed.netloc == 'vidble.com') and parsed.path.startswith('/album/'):
         return 'ripme'
+    elif (parsed.netloc == 'www.redgifs.com' or parsed.netloc == 'redgifs.com'):
+        return 'youtube-dl'
     else:
         return 'other'
 
