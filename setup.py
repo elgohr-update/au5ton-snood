@@ -12,7 +12,7 @@ with requests.get('https://yt-dl.org/downloads/latest/youtube-dl', stream=True) 
         with open(youtubedl_location, 'wb') as f:
             shutil.copyfileobj(r.raw, f)
 
-with requests.get('https://github.com/RipMeApp/ripme/releases/download/1.7.90/ripme.jar', stream=True) as r:
+with requests.get('https://github.com/RipMeApp/ripme/releases/download/1.7.92/ripme.jar', stream=True) as r:
         with open(ripme_location, 'wb') as f:
             shutil.copyfileobj(r.raw, f)
 
