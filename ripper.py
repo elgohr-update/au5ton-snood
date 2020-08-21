@@ -12,14 +12,6 @@ from tqdm import tqdm
 import humanfriendly
 from signal import signal, SIGINT
 
-# def handler(signal_received, frame):
-#   # Handle any cleanup here
-#   print('SIGINT or CTRL-C detected. Exiting gracefully')
-#   exit(0)
-#   #os.system(f'kill {os.getpid()}')
-
-#signal(SIGINT, handler)
-
 program_execute_time = time.mktime(time.localtime())
 
 parser = argparse.ArgumentParser(description='Rip links from the database')

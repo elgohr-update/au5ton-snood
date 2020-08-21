@@ -14,6 +14,9 @@ from tqdm import tqdm
 import humanfriendly
 from signal import signal, SIGINT
 
+from colorama import init, Fore, Style
+init()
+
 def exists_already(post: praw.models.Submission, conn: sqlite3.Connection) -> bool:
   c = conn.cursor()
   c.execute(f'SELECT COUNT(id) FROM reddit_submissions WHERE id=?', (post.id,))
@@ -83,22 +86,26 @@ friends = [u.name for u in friends]
 print(f'Downloading post history')
 with tqdm(total=len(friends), unit='user') as pbar:
   for username in friends:
+    user_execute_time = time.time_ns()
     pbar.set_description(username)
     new_post_count = 0
     message = ''
     try:
       for post in reddit.redditor(username).submissions.new(limit=None):
-        if post.is_self == False:
+        if post.is_self == False and post.stickied == False:
           exists = exists_already(post, conn)
           if(exists == False):
             new_post_count += 1
-          if(post.stickied or not exists):
             c.execute(f'INSERT OR IGNORE INTO reddit_submissions VALUES (?,?,?,?,?,?,?,?,?,?)', (post.title, post.author.name, post.created_utc, f'https://reddit.com{post.permalink}', post.url, post.id, int(post.num_comments), int(post.score), time.mktime(time.localtime()), False))
             conn.commit()
-          message = f'\t{post.author.name} had {new_post_count} new posts. Already indexed up to {localize_utc(post.created)}.'
-          if(exists and not post.stickied):
+          color_start = f'{Fore.GREEN}' if new_post_count > 0 else f'{Style.DIM}'
+          message = f'\t{color_start}{post.author.name} had {new_post_count} new posts.'
+          if(exists):
             break
-      pbar.write(message)
+      user_elapsed = time.time_ns() - user_execute_time
+      if(message == ''):
+        message = f'\t{Fore.RED}{username} banned, deleted, or has no posts.'
+      pbar.write(f'{message} Processed in {round(user_elapsed / 1e6 / 1000, 3)}s.{Style.RESET_ALL}')
     except KeyboardInterrupt:
       exit(0)
     except Exception as err:
@@ -108,4 +115,4 @@ with tqdm(total=len(friends), unit='user') as pbar:
     pbar.update()
 
 seconds_passed = time.mktime(time.localtime()) - program_execute_time
-print(f'Program took {humanfriendly.format_timespan(seconds_passed)} to complete.')
+print(f'Program took {humanfriendly.format_timespan()} to complete.')
