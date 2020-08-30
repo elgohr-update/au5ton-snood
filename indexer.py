@@ -25,6 +25,15 @@ def exists_already(post: praw.models.Submission, conn: sqlite3.Connection) -> bo
     return True
   else:
     return False
+
+def friend_already(redditor: praw.models.Redditor, conn: sqlite3.Connection) -> bool:
+  c = conn.cursor()
+  c.execute(f'SELECT COUNT(id) FROM redditors WHERE id=?', (redditor.id,))
+  count = c.fetchall()[0]['COUNT(id)']
+  if(count > 0):
+    return True
+  else:
+    return False
   
 def localize_utc(x: int) -> str:
   return date.fromtimestamp(x).strftime('%b %d, %Y')
@@ -75,11 +84,17 @@ with Spinner('Initializing database'):
   )
   ''')
 
+tmp_msgs = []
 with Spinner('Populating database with redditor information'):
   for redditor in friends:
+    if(not friend_already(redditor, conn)):
+      tmp_msgs += [f'\t{Style.DIM}{redditor.name} is a new redditor.{Style.RESET_ALL}']
     c.execute(
       f'INSERT OR IGNORE INTO redditors VALUES {str((redditor.name, redditor.id, time.mktime(time.localtime())))}')
     conn.commit()
+for ln in tmp_msgs:
+  print(ln)
+print(f'{Fore.GREEN}{len(tmp_msgs)} new redditors.{Style.RESET_ALL}')
 
 # only usernames are necessary
 friends = [u.name for u in friends]
