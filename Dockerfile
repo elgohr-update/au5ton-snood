@@ -14,4 +14,4 @@ COPY . .
 RUN chmod +x /src/snood/youtube-dl
 RUN chmod +x /src/snood/ripme.jar
 
-ENTRYPOINT [ "sh", "-c", "\"./ripper.py\"" ]
+ENTRYPOINT [ "sh", "-c", "\"./indexer.py && ./ripper.py\"" ]
