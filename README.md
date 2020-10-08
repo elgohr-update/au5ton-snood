@@ -9,7 +9,7 @@ python3 setup.py
 
 ## Docker 
 
-![Docker Pulls](https://img.shields.io/docker/pulls/au5ton/snood)
+[![Docker Pulls](https://img.shields.io/docker/pulls/au5ton/snood)](https://hub.docker.com/r/au5ton/snood)
 
 Pull: `docker pull au5ton/snood`
 
