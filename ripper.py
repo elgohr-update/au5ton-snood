@@ -6,6 +6,7 @@ import time
 import argparse
 
 from snood.ui import Spinner
+from snood import telegram
 import snood.downloader
 import snood.util
 from tqdm import tqdm
@@ -33,6 +34,8 @@ conn.row_factory = snood.util.dict_factory
 c = conn.cursor()
 submissions = []
 
+telegram.send_message('snood: ripper initializing')
+
 with Spinner('Querying database for posts to traverse'):
   c.execute('SELECT * FROM reddit_submissions WHERE snood_downloaded = 0 ORDER BY author, created_utc ASC')
   submissions = c.fetchall()
@@ -52,3 +55,4 @@ with tqdm(total=len(submissions), unit='posts') as pbar:
 
 seconds_passed = time.mktime(time.localtime()) - program_execute_time
 print(f'Program took {humanfriendly.format_timespan(seconds_passed)} to complete.')
+telegram.send_message(f'snood: ripper completed in {humanfriendly.format_timespan(seconds_passed)}')

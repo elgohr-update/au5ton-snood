@@ -9,6 +9,7 @@ import time
 from datetime import date
 
 from snood.ui import Spinner
+from snood import telegram
 import snood.util
 from tqdm import tqdm
 import humanfriendly
@@ -63,6 +64,8 @@ with Spinner('Loading friends from reddit'):
 conn = sqlite3.connect(SQLITE_PATH)
 conn.row_factory = snood.util.dict_factory
 c = conn.cursor()
+
+telegram.send_message('snood: indexer initializing')
 
 with Spinner('Initializing database'):
   # PRAW should have this information lazy-loaded and follow-up requests shouldn't be necessary
@@ -137,3 +140,4 @@ with tqdm(total=len(friends), unit='user') as pbar:
 
 seconds_passed = time.mktime(time.localtime()) - program_execute_time
 print(f'Program took {humanfriendly.format_timespan(seconds_passed)} to complete.')
+telegram.send_message(f'snood: indexer completed in {humanfriendly.format_timespan(seconds_passed)}')
