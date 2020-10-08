@@ -133,6 +133,6 @@ dmypy.json
 .vscode/
 config.ini
 database.sqlite
-snood/youtube-dl
-snood/ripme.jar
+!snood/youtube-dl
+!snood/ripme.jar
 rips/

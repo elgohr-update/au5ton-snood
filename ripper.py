@@ -12,15 +12,23 @@ from tqdm import tqdm
 import humanfriendly
 from signal import signal, SIGINT
 
+IS_DOCKER = True if os.environ.get('IS_DOCKER', False) == "Yes" else False
+if(IS_DOCKER):
+  print(f'Running inside Docker 🐋')
+
+SQLITE_PATH = '/config/database.sqlite' if IS_DOCKER else os.path.join(os.path.dirname(os.path.abspath(__file__)), 'database.sqlite')
+
 program_execute_time = time.mktime(time.localtime())
 
 parser = argparse.ArgumentParser(description='Rip links from the database')
 parser.add_argument('download_dir', type=str, help='location where files will be downloaded')
 args = parser.parse_args()
-print(f'Download directory: {os.path.abspath(args.download_dir)}')
-DOWNLOAD_DIR = os.path.abspath(args.download_dir)
 
-conn = sqlite3.connect('database.sqlite')
+DOWNLOAD_DIR = '/data/noods' if IS_DOCKER else os.path.abspath(args.download_dir)
+
+print(f'Download directory: {DOWNLOAD_DIR}')
+
+conn = sqlite3.connect(SQLITE_PATH)
 conn.row_factory = snood.util.dict_factory
 c = conn.cursor()
 submissions = []

@@ -17,6 +17,13 @@ from signal import signal, SIGINT
 from colorama import init, Fore, Style
 init()
 
+IS_DOCKER = True if os.environ.get('IS_DOCKER', False) == "Yes" else False
+if(IS_DOCKER):
+  print(f'Running inside Docker 🐋')
+
+CONFIG_PATH = '/config/config.ini' if IS_DOCKER else os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.ini')
+SQLITE_PATH = '/config/database.sqlite' if IS_DOCKER else os.path.join(os.path.dirname(os.path.abspath(__file__)), 'database.sqlite')
+
 def exists_already(post: praw.models.Submission, conn: sqlite3.Connection) -> bool:
   c = conn.cursor()
   c.execute(f'SELECT COUNT(id) FROM reddit_submissions WHERE id=?', (post.id,))
@@ -42,8 +49,7 @@ program_execute_time = time.mktime(time.localtime())
 
 config = configparser.ConfigParser()
 # reads config.ini that's adjacent to main.py
-config.read(os.path.join(os.path.dirname(
-  os.path.abspath(__file__)), 'config.ini'))
+config.read(CONFIG_PATH)
 
 reddit = praw.Reddit(client_id=config['REDDIT']['ClientId'],
            client_secret=config['REDDIT']['ClientSecret'],
@@ -54,7 +60,7 @@ friends = []
 with Spinner('Loading friends from reddit'):
   friends = reddit.user.friends()
 
-conn = sqlite3.connect('database.sqlite')
+conn = sqlite3.connect(SQLITE_PATH)
 conn.row_factory = snood.util.dict_factory
 c = conn.cursor()
 
@@ -130,4 +136,4 @@ with tqdm(total=len(friends), unit='user') as pbar:
     pbar.update()
 
 seconds_passed = time.mktime(time.localtime()) - program_execute_time
-print(f'Program took {humanfriendly.format_timespan()} to complete.')
+print(f'Program took {humanfriendly.format_timespan(seconds_passed)} to complete.')
