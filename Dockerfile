@@ -11,7 +11,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 VOLUME [ "/config", "/data" ]
 COPY . .
+RUN chmod +x /src/entrypoint.sh
+RUN chmod +x /src/indexer.py
+RUN chmod +x /src/ripper.py
 RUN chmod +x /src/snood/youtube-dl
 RUN chmod +x /src/snood/ripme.jar
 
-ENTRYPOINT [ "sh", "-c", "\"./indexer.py && ./ripper.py\"" ]
+ENTRYPOINT [ "sh", "-c", "/src/entrypoint.sh" ]
