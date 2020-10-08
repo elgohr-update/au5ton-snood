@@ -21,7 +21,7 @@ SQLITE_PATH = '/config/database.sqlite' if IS_DOCKER else os.path.join(os.path.d
 program_execute_time = time.mktime(time.localtime())
 
 parser = argparse.ArgumentParser(description='Rip links from the database')
-parser.add_argument('download_dir', type=str, help='location where files will be downloaded')
+parser.add_argument('--download_dir', type=str, help='location where files will be downloaded')
 args = parser.parse_args()
 
 DOWNLOAD_DIR = '/data/noods' if IS_DOCKER else os.path.abspath(args.download_dir)

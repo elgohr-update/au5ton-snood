@@ -3,6 +3,7 @@ import requests
 import shutil
 import os
 import subprocess
+from pathlib import Path
 from urllib.parse import urlparse
 
 youtubedl_location = os.path.abspath(os.path.join(os.path.dirname(__file__), 'youtube-dl'))
@@ -42,7 +43,7 @@ def ripme(folder: str, link: str):
 
 def download(folder: str, link: str):
     if not os.path.exists(folder):
-        os.mkdir(folder)
+        Path(folder).mkdir(parents=True, exist_ok=True)
     method = download_method(link)
     if method == 'wget':
         wget(folder, link)
