@@ -3,6 +3,7 @@
 import os
 import sqlite3
 import time
+import math
 import argparse
 
 from snood.ui import Spinner
@@ -12,6 +13,9 @@ import snood.util
 from tqdm import tqdm
 import humanfriendly
 from signal import signal, SIGINT
+
+from colorama import init, Fore, Style
+init()
 
 IS_DOCKER = True if os.environ.get('IS_DOCKER', False) == "Yes" else False
 if(IS_DOCKER):
@@ -40,15 +44,31 @@ with Spinner('Querying database for posts to traverse'):
   c.execute('SELECT * FROM reddit_submissions WHERE snood_downloaded = 0 ORDER BY author, created_utc ASC')
   submissions = c.fetchall()
 
+def recur(author: str, url: str, retry = 1):
+  if(retry <= 3):
+    try:
+      snood.downloader.download(os.path.join(DOWNLOAD_DIR, author), url)
+      return True
+    except:
+      print(f'⚠ Exception occurred. Backing off for {math.pow(4, retry)} seconds.')
+      time.sleep(math.pow(4, retry))
+      recur(author, url, retry + 1)
+  else:
+    return False
+  snood.downloader.download(os.path.join(DOWNLOAD_DIR, author), url)
+
 print(f'{len(submissions)} posts queued to process')
 
 with tqdm(total=len(submissions), unit='posts') as pbar:
   for post in submissions:
     try:
       pbar.set_description(f'/u/{post["author"]} https://redd.it/{post["id"]}')
-      snood.downloader.download(os.path.join(DOWNLOAD_DIR, post['author']), post['url'])
-      c.execute('UPDATE reddit_submissions SET snood_downloaded = 1 WHERE id = ?', (post["id"],))
-      conn.commit()
+      did_download = recur(post['author'], post['url'])
+      if(did_download):
+        c.execute('UPDATE reddit_submissions SET snood_downloaded = 1 WHERE id = ?', (post["id"],))
+        conn.commit()
+      else:
+        pbar.write(f'{Fore.RED}Skipped: /u/{post["author"]} https://redd.it/{post["id"]}{Style.RESET_ALL}')
       pbar.update()
     except KeyboardInterrupt:
       exit(0)
