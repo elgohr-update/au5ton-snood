@@ -52,7 +52,7 @@ def recur(author: str, url: str, pbar, retry = 1):
     except:
       pbar.write(f'⚠ Exception occurred. Backing off for {math.pow(4, retry)} seconds.')
       time.sleep(math.pow(4, retry))
-      return recur(author, url, retry + 1)
+      return recur(author, url, pbar, retry + 1)
   else:
     return False
 
