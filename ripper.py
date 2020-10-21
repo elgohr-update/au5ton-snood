@@ -44,13 +44,13 @@ with Spinner('Querying database for posts to traverse'):
   c.execute('SELECT * FROM reddit_submissions WHERE snood_downloaded = 0 ORDER BY author, created_utc ASC')
   submissions = c.fetchall()
 
-def recur(author: str, url: str, retry = 1):
+def recur(author: str, url: str, pbar, retry = 1):
   if(retry <= 3):
     try:
       snood.downloader.download(os.path.join(DOWNLOAD_DIR, author), url)
       return True
     except:
-      print(f'⚠ Exception occurred. Backing off for {math.pow(4, retry)} seconds.')
+      pbar.write(f'⚠ Exception occurred. Backing off for {math.pow(4, retry)} seconds.')
       time.sleep(math.pow(4, retry))
       return recur(author, url, retry + 1)
   else:
@@ -62,7 +62,7 @@ with tqdm(total=len(submissions), unit='posts') as pbar:
   for post in submissions:
     try:
       pbar.set_description(f'/u/{post["author"]} https://redd.it/{post["id"]}')
-      did_download = recur(post['author'], post['url'])
+      did_download = recur(post['author'], post['url'], pbar, 1)
       if(did_download):
         c.execute('UPDATE reddit_submissions SET snood_downloaded = 1 WHERE id = ?', (post["id"],))
         conn.commit()
