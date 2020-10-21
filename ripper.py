@@ -52,10 +52,9 @@ def recur(author: str, url: str, retry = 1):
     except:
       print(f'⚠ Exception occurred. Backing off for {math.pow(4, retry)} seconds.')
       time.sleep(math.pow(4, retry))
-      recur(author, url, retry + 1)
+      return recur(author, url, retry + 1)
   else:
     return False
-  snood.downloader.download(os.path.join(DOWNLOAD_DIR, author), url)
 
 print(f'{len(submissions)} posts queued to process')
 
