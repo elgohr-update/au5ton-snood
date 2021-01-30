@@ -13,6 +13,8 @@ def download_method(link: str):
     parsed = urlparse(link)
     # pure wget
     if parsed.netloc in ['i.redd.it', 'i.reddituploads.com', 'i.imgur.com', 'thumbs.gfycat.com']:
+        if parsed.netloc in ['i.imgur.com'] and parsed.path.endswith('.gifv'):
+            return 'youtube-dl'
         return 'wget'
     elif 'media.tumblr.com' in parsed.netloc:
         return 'wget'
