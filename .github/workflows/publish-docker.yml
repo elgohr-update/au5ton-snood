@@ -1,6 +1,8 @@
 # see: https://help.github.com/en/actions/language-and-framework-guides/publishing-nodejs-packages#publishing-packages-to-npm-and-github-packages
 name: Publish Docker
 on:
+  push:
+    branches: [master]
   release:
     types: [created]
 jobs:
