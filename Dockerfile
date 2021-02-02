@@ -1,5 +1,6 @@
 FROM python:3-alpine
 ENV IS_DOCKER=Yes
+LABEL org.opencontainers.image.source https://github.com/au5ton/snood
 
 RUN mkdir /config
 RUN mkdir -p /data/noods
