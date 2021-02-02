@@ -20,7 +20,7 @@ jobs:
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
         name: ${{ github.repository }}
-        username: ${{ env.GITHUB_ACTOR }}
+        username: ${{ github.actor }}
         password: ${{ secrets.CR_PAT }}
         registry: ghcr.io
         snapshot: true
