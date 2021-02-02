@@ -3,8 +3,8 @@ name: Publish Docker
 on:
   push:
     branches: [master]
-  release:
-    types: [created]
+#  release:
+#    types: [created]
 jobs:
   build:
     runs-on: ubuntu-latest
