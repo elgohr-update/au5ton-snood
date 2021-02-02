@@ -19,7 +19,7 @@ jobs:
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
-        name: ${{ env.GITHUB_REPOSITORY }}
+        name: ${{ github.repository }}
         username: ${{ env.GITHUB_ACTOR }}
         password: ${{ secrets.CR_PAT }}
         registry: ghcr.io
