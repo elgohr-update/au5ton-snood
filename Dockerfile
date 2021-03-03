@@ -4,7 +4,7 @@ LABEL org.opencontainers.image.source https://github.com/au5ton/snood
 
 RUN mkdir /config
 RUN mkdir -p /data/noods
-RUN apk update && apk upgrade && apk add wget openjdk11-jre-headless 
+RUN apk update && apk upgrade && apk add wget openjdk11-jre-headless fdupes
 
 WORKDIR /src
 COPY requirements.txt ./
