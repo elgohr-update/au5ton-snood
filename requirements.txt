@@ -1,5 +1,5 @@
 tqdm==4.41.1
-praw==7.1.0
+praw==7.6.0
 halo==0.0.28
 colorama==0.4.3
 humanfriendly==4.18

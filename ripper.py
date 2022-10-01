@@ -5,6 +5,7 @@ import sqlite3
 import time
 import math
 import argparse
+import traceback
 
 from snood.ui import Spinner
 from snood import telegram
@@ -49,7 +50,8 @@ def recur(author: str, url: str, pbar, retry = 1):
     try:
       snood.downloader.download(os.path.join(DOWNLOAD_DIR, author), url)
       return True
-    except:
+    except Exception as ex:
+      print(''.join(traceback.format_exception(etype=type(ex), value=ex, tb=ex.__traceback__)))
       pbar.write(f'⚠ Exception occurred. Backing off for {math.pow(4, retry)} seconds.')
       time.sleep(math.pow(4, retry))
       return recur(author, url, pbar, retry + 1)
